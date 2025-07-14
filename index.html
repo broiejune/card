@@ -2,20 +2,14 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>카드 뽑기</title>
+  <title>랜덤 카드 뽑기</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
       text-align: center;
-      padding: 50px;
+      padding: 40px;
       background-color: #f4f4f4;
     }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
     button {
       padding: 10px 20px;
       font-size: 16px;
@@ -24,13 +18,7 @@
       background-color: #4CAF50;
       color: white;
       border-radius: 8px;
-      transition: background-color 0.3s;
     }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
     .card {
       margin-top: 30px;
       padding: 30px;
@@ -39,30 +27,42 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       font-size: 24px;
       max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 30px auto 0;
     }
   </style>
 </head>
 <body>
-  <h1></h1>
+  <h1>랜덤 카드 뽑기</h1>
   <button onclick="drawCard()">뽑기</button>
-
   <div id="cardContainer" class="card" style="display: none;"></div>
 
   <script>
-    const items = [
-      "파이썬 배우기",
-      "운동 30분 하기",
-      "하루 감사 일기 쓰기",
-      "좋아하는 노래 듣기",
-      "친구에게 연락하기",
-      "독서 10페이지",
-      "물 많이 마시기",
-      "30분 명상"
-    ];
+    let items = [];
 
+    // 페이지 로드시 list.txt 불러오기
+    window.onload = function () {
+      fetch('list.txt')
+        .then(response => response.text())
+        .then(text => {
+          items = text
+            .split(/\r?\n/)
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+          console.log(`불러온 항목 수: ${items.length}`);
+        })
+        .catch(error => {
+          alert('list.txt 불러오기 실패!');
+          console.error(error);
+        });
+    };
+
+    // 뽑기
     function drawCard() {
+      if (items.length === 0) {
+        alert("아직 항목이 로드되지 않았습니다.");
+        return;
+      }
+
       const randomIndex = Math.floor(Math.random() * items.length);
       const selectedItem = items[randomIndex];
 
