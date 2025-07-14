@@ -8,11 +8,11 @@
     body {
       font-family: 'Arial', sans-serif;
       text-align: center;
-      padding: 50px;
+      padding: 40px;
       background-color: #f4f4f4;
     }
 
-    h1 {
+    input[type="file"] {
       margin-bottom: 20px;
     }
 
@@ -24,11 +24,7 @@
       background-color: #4CAF50;
       color: white;
       border-radius: 8px;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #45a049;
+      margin-top: 10px;
     }
 
     .card {
@@ -46,23 +42,41 @@
 </head>
 <body>
   <h1>랜덤 카드 뽑기</h1>
+
+  <input type="file" id="fileInput" accept=".txt" />
+  <br/>
   <button onclick="drawCard()">뽑기</button>
 
   <div id="cardContainer" class="card" style="display: none;"></div>
 
   <script>
-    const items = [
-      "파이썬 배우기",
-      "운동 30분 하기",
-      "하루 감사 일기 쓰기",
-      "좋아하는 노래 듣기",
-      "친구에게 연락하기",
-      "독서 10페이지",
-      "물 많이 마시기",
-      "30분 명상"
-    ];
+    let items = [];
 
+    // 파일 읽기
+    document.getElementById('fileInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const content = e.target.result;
+        // 줄바꿈 기준으로 항목 분리
+        items = content
+          .split(/\r?\n/)
+          .map(line => line.trim())
+          .filter(line => line.length > 0);
+        alert(`총 ${items.length}개의 항목이 로드되었습니다.`);
+      };
+      reader.readAsText(file, 'UTF-8');
+    });
+
+    // 뽑기 기능
     function drawCard() {
+      if (items.length === 0) {
+        alert("먼저 .txt 파일을 업로드하세요!");
+        return;
+      }
+
       const randomIndex = Math.floor(Math.random() * items.length);
       const selectedItem = items[randomIndex];
 
